@@ -1,0 +1,46 @@
+version: '3'
+services:
+  apache:
+    build:
+      context: ./apache/
+    container_name: apache_lar
+    ports:
+      - 80:80
+    environment:
+      - FPM_HOST=php_lar:9000
+    links:
+      - php
+    volumes:
+      - wwwdata:/var/www/html
+      - config:/etc/apache2/sites-enabled/
+      - fpmsock:/run/php/
+      - logs:/var/log/apache2
+  php:
+    build:
+      context: ./php/
+    container_name: php_lar
+    ports:
+      - 9000:9000
+    volumes:
+      - wwwdata:/var/www/html
+      - fpmsock:/run/php/
+      - logs:/var/log/apache2
+  portail:
+    build:
+      context: ./portail
+    container_name: portail_lar
+    volumes:
+      - wwwdata:/var/www/html
+      - config:/etc/apache2/sites-enabled/
+  wspointdevente:
+    build:
+      context: ./wspointdevente
+    container_name: wspointdevente_lar
+    volumes:
+      - wwwdata:/var/www/html
+      - config:/etc/apache2/sites-enabled/
+volumes:
+  logs:
+  wwwdata:
+  config:
+  fpmsock:
